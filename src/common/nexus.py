@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-10 23:28:10
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 01:16:56
+# @Last Modified time: 2017-05-11 01:35:31
 import random
 from threading import Lock
 
@@ -26,11 +26,10 @@ class Nexus(object):
     def collect(self, amount=1000):
         with self._lock:
             if self.crestalRemain < amount:
-                self.crestalInControl += self.crestalRemain
-                self.crestalRemain = 0
-            else:
-                self.crestalRemain -= amount
-                self.crestalInControl += amount
+                amount = self.crestalRemain
+            self.crestalRemain -= amount
+            self.crestalInControl += amount
+            return amount
 
     def getStatus(self, role):
         if role == 'archon':
