@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-11 10:53:57
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 11:42:24
+# @Last Modified time: 2017-05-11 11:55:47
 from flask.ext.restful import Resource, reqparse
 from flask import session
 from src.common.util import abortIfSubjectUnauthenticated
@@ -42,14 +42,14 @@ class SpearOfAdun(Resource):
             abortInvalideRole(args['role'])
         session['subject'] = args['subject']
         session['role'] = args['role']
-        return 'login as %s using %s' % (session['subject'], session['role']), 201
+        return {'message': 'login as %s using %s' % (session['subject'], session['role'])}, 201
 
     def put(self):
         args = self.putparser.parse_args()
         if args['role'] is not None:
             abortInvalideRole(args['role'])
         session['role'] = args['role']
-        return 'you-%s change role to %s' % (session.subject, session.role), 200
+        return {'message': 'you-%s change role to %s' % (session.subject, session.role)}, 200
 
     def delete(self):
         abortIfSubjectUnauthenticated(session)

@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-11 01:46:30
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 11:38:34
+# @Last Modified time: 2017-05-11 11:58:29
 from flask.ext.restful import Resource, reqparse
 from flask import session
 from src.common.util import abortIfSubjectUnauthenticated, checkRole, checkPermission
@@ -26,7 +26,7 @@ class Zealot(Resource):
         abortIfSubjectUnauthenticated(session)
         checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
-        return 'you have %d zealot warriors' % nexus.zealot, 200
+        return {'message': 'you have %d zealot warriors' % nexus.zealot}, 200
 
     def put(self):
         permission = 'transport_zealot'
@@ -35,7 +35,7 @@ class Zealot(Resource):
         checkPermission(session['role'], permission, role_permission)
         args = self.putparser.parse_args()
         amount = nexus.transport(args['amount'])
-        return 'transport %d zealot warriors, En Taro Tassadar!' % amount, 200
+        return {'message': 'transport %d zealot warriors, En Taro Tassadar!' % amount}, 200
 
 
 class ForAiur(Resource):
@@ -54,11 +54,13 @@ class ForAiur(Resource):
         checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
         args = self.putparser.parse_args()
+        message = None
         if args['for_aiur']:
             if nexus.forAiur():
-                return 'Khassar de templari! Congratulations!', 201
+                message = 'Khassar de templari! Congratulations!'
             else:
-                return 'You failed.', 200
+                message = 'You failed.'
 
         else:
-            return "you'd better transport more zealot!", 200
+            message = "you'd better transport more zealot!"
+        return {'message': message}, 200

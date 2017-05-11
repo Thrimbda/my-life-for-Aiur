@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-11 01:04:44
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 11:38:03
+# @Last Modified time: 2017-05-11 11:55:03
 from flask.ext.restful import Resource, reqparse
 from flask import session
 from src.common.util import abortIfSubjectUnauthenticated, checkRole, checkPermission
@@ -26,7 +26,7 @@ class Crystal(Resource):
         abortIfSubjectUnauthenticated(session)
         checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
-        return 'remain %d units crystal.' % (nexus.crestalRemain), 200
+        return {'message': 'remain %d units crystal.'} % (nexus.crestalRemain), 200
 
     def put(self):
         permission = 'get_crystal'
@@ -35,4 +35,4 @@ class Crystal(Resource):
         checkPermission(session['role'], permission, role_permission)
         args = self.putparser.parse_args()
         amount = nexus.collect(args['amount'])
-        return 'collected %d units crystal.' % (amount), 200
+        return {'message': 'collected %d units crystal.'} % (amount), 200
