@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-10 23:28:10
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 10:49:47
+# @Last Modified time: 2017-05-11 11:43:39
 import random
 from threading import Lock
 
@@ -18,7 +18,7 @@ class Nexus(object):
 
     def __init__(self):
         self._amond = random.randint(20, 100)
-        self.crestalRemain = self._amond * 100 + (self._amond / 5 + 1) * 100
+        self.crestalRemain = self._amond * 100 + (self._amond // 5 + 1) * 100
         self.crestalInControl = 0
         self.populationCap = 0
         self.zealot = 0
@@ -48,6 +48,13 @@ class Nexus(object):
             self.crestalInControl -= amount * 100
             return amount
 
+    def forAiur(self):
+        with self._lock:
+            if self.zealot >= self._amond:
+                return True
+            else:
+                return False
+
     def getStatus(self, role):
         if role == 'archon':
             return {
@@ -69,3 +76,6 @@ class Nexus(object):
             }
         else:
             return {}
+
+
+nexus = Nexus()
