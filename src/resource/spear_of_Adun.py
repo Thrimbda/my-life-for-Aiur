@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-11 10:53:57
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 11:55:47
+# @Last Modified time: 2017-05-11 15:36:00
 from flask.ext.restful import Resource, reqparse
 from flask import session
 from src.common.util import abortIfSubjectUnauthenticated
@@ -30,7 +30,6 @@ class SpearOfAdun(Resource):
     def get(self):
         permission = 'get_status'
         abortIfSubjectUnauthenticated(session)
-        checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
         return nexus.getStatus(session['role']), 200
 
@@ -40,6 +39,7 @@ class SpearOfAdun(Resource):
             abortInvalideSubject(args['subject'])
         if args['role'] is not None:
             abortInvalideRole(args['role'])
+        checkRole(args['subject'], args['role'], subject_role)
         session['subject'] = args['subject']
         session['role'] = args['role']
         return {'message': 'login as %s using %s' % (session['subject'], session['role'])}, 201

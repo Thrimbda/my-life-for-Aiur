@@ -2,11 +2,10 @@
 # @Author: Macsnow
 # @Date:   2017-05-11 01:46:30
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-11 11:58:29
+# @Last Modified time: 2017-05-11 15:36:37
 from flask.ext.restful import Resource, reqparse
 from flask import session
-from src.common.util import abortIfSubjectUnauthenticated, checkRole, checkPermission
-from src.common.subject_role import subject_role
+from src.common.util import abortIfSubjectUnauthenticated, checkPermission
 from src.common.role_permission import role_permission
 from src.common.nexus import nexus
 
@@ -24,14 +23,12 @@ class Zealot(Resource):
     def get(self):
         permission = 'get_status'
         abortIfSubjectUnauthenticated(session)
-        checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
         return {'message': 'you have %d zealot warriors' % nexus.zealot}, 200
 
     def put(self):
         permission = 'transport_zealot'
         abortIfSubjectUnauthenticated(session)
-        checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
         args = self.putparser.parse_args()
         amount = nexus.transport(args['amount'])
@@ -48,10 +45,15 @@ class ForAiur(Resource):
                                     location='json')
         super(ForAiur, self).__init__()
 
+    def get(self):
+        permission = 'scout'
+        abortIfSubjectUnauthenticated(session)
+        checkPermission(session['role'], permission, role_permission)
+        return {'message': "to defeat Amond, you'll need %d zealot!" % (nexus._amond)}, 200
+
     def post(self):
         permission = 'for_aiur'
         abortIfSubjectUnauthenticated(session)
-        checkRole(session['subject'], session['role'], subject_role)
         checkPermission(session['role'], permission, role_permission)
         args = self.putparser.parse_args()
         message = None
